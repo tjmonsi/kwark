@@ -16,7 +16,6 @@ module.exports = config => {
 
       esm: {
         babel: {
-
           options: {
             babelrc: false
           }

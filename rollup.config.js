@@ -1,5 +1,7 @@
 import babel from 'rollup-plugin-babel';
-// import sizes from 'rollup-plugin-sizes';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import analyze from 'rollup-plugin-analyzer';
 import { terser as uglify } from 'rollup-plugin-terser';
 
 const output = [];
@@ -16,8 +18,18 @@ output.push({
     format: 'iife'
   },
   plugins: [
+    resolve(),
+    commonjs({
+      namedExports: {
+        // left-hand side can be an absolute path, a path
+        // relative to the current directory, or the name
+        // of a module in node_modules
+        'node_modules/@babel/runtime/regenerator/index.js': [ 'regenerator' ]
+      }
+    }),
     babel(),
-    uglify()
+    uglify(),
+    analyze()
   ]
 });
 
@@ -28,7 +40,21 @@ output.push({
     format: 'esm'
   },
   plugins: [
-    uglify()
+    uglify(),
+    analyze()
+  ]
+});
+
+// for testing
+output.push({
+  input: './mixins/properties-mixin.js',
+  output: {
+    file: './dist/mixins/properties-mixin.js',
+    format: 'esm'
+  },
+  plugins: [
+    uglify(),
+    analyze()
   ]
 });
 

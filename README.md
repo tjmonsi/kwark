@@ -25,6 +25,14 @@ Before submitting any change, make sure to:
 - Read the [Contributing instructions](./CONTRIBUTING.md)
 - Other instruction
 
+# How does it work?
+
+It bootstraps the necessary properties that needs to be tracked. It also creates a mapping between its attribute counterpart.
+
+What it does is the following steps:
+1. Creates getters and setters
+2.
+
 # Why "yet another"?
 
 Because there is a lot of libraries already that does almost the same thing:

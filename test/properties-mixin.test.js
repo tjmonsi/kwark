@@ -1,13 +1,38 @@
 /* eslint-disable no-unused-expressions */
-import { fixture, expect } from '@open-wc/testing';
-// import demand from 'must';
-import '../example/src/web-component';
+import { fixture, defineCE } from '@open-wc/testing-helpers';
+import { expect } from '@open-wc/testing';
+import { PropertiesMixin } from '../mixins/properties-mixin';
+const { HTMLElement } = window;
 
-describe('True Checking', () => {
-  it('is false by default', async () => {
-    const el = await fixture('<web-component></web-component>');
-    // demand(el.success).to.be.false();
-    expect(el.success).to.be.false;
+class Component extends PropertiesMixin(HTMLElement) {
+  static get properties () {
+    return {
+      prop1: {
+        type: String
+      },
+      prop2: {
+        type: Number,
+        value: 1
+      }
+    };
+  }
+}
+
+describe('Properties Mixin', () => {
+  let tag;
+  before(() => {
+    tag = defineCE(Component);
+  });
+
+  it('should have a property called "prop1"', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    expect('prop1' in el).to.be.true;
+  });
+
+  it('should have a default value', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    await Promise.resolve();
+    expect(el.prop2).to.be.equal(1);
   });
 
   // it('false values will have a light-dom of <p>NOPE</p>', async () => {
