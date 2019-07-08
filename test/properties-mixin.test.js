@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { fixture, defineCE } from '@open-wc/testing-helpers';
+import { fixture, defineCE, html, unsafeStatic } from '@open-wc/testing-helpers';
 import { expect } from '@open-wc/testing';
 import { PropertiesMixin } from '../mixins/properties-mixin';
 const { HTMLElement } = window;
@@ -31,8 +31,14 @@ describe('Properties Mixin', () => {
 
   it('should have a default value', async () => {
     const el = await fixture(`<${tag}></${tag}>`);
-    await Promise.resolve();
     expect(el.prop2).to.be.equal(1);
+  });
+
+  it('should have the attribute value equated to its property', async () => {
+    const tagName = unsafeStatic(tag);
+    const el = await fixture(html`<${tagName} prop1="str"></${tagName}>`);
+    await Promise.resolve();
+    expect(el.prop1).to.be.equal('str');
   });
 
   // it('false values will have a light-dom of <p>NOPE</p>', async () => {
