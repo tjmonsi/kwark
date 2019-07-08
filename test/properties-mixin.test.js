@@ -13,6 +13,10 @@ class Component extends PropertiesMixin(HTMLElement) {
       prop2: {
         type: Number,
         value: 1
+      },
+      prop3: {
+        type: String,
+        reflect: true
       }
     };
   }
@@ -39,6 +43,14 @@ describe('Properties Mixin', () => {
     const el = await fixture(html`<${tagName} prop1="str"></${tagName}>`);
     await Promise.resolve();
     expect(el.prop1).to.be.equal('str');
+  });
+
+  it('should have the prop value reflected to attribute', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    el.prop3 = 'str2';
+    await Promise.resolve();
+    expect(el.hasAttribute('prop3')).to.be.true;
+    expect(el.getAttribute('prop3')).to.be.equal(el.prop3);
   });
 
   // it('false values will have a light-dom of <p>NOPE</p>', async () => {
