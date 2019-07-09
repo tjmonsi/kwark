@@ -29,6 +29,9 @@ class Component extends PropertiesMixin(HTMLElement) {
       prop6: {
         type: String,
         observer: 'prop6Fn'
+      },
+      prop7: {
+        type: Boolean
       }
     };
   }
@@ -57,6 +60,13 @@ describe('Properties Mixin', () => {
     const el = await fixture(html`<${tagName} prop1="str"></${tagName}>`);
     await Promise.resolve();
     expect(el.prop1).to.be.equal('str');
+  });
+
+  it('should have property into true if attribute is present', async () => {
+    const tagName = unsafeStatic(tag);
+    const el = await fixture(html`<${tagName} prop7></${tagName}>`);
+    await Promise.resolve();
+    expect(el.prop7).to.be.true;
   });
 
   it('should have the prop value reflected to attribute', async () => {
@@ -92,16 +102,4 @@ describe('Properties Mixin', () => {
     await Promise.resolve();
     expect(spy.calledOnce).to.be.true;
   });
-
-  // it('false values will have a light-dom of <p>NOPE</p>', async () => {
-  //   const el = await fixture('<get-result></get-result>');
-  //   expect(el).dom.to.equal('<get-result><p>NOPE</p></get-result>');
-  // });
-
-  // it('true values will have a light-dom of <p>YEAH</p>', async () => {
-  //   const foo = 1;
-  //   const el = await fixture(html`<get-result .success=${foo === 1}></get-result>`);
-  //   expect(el.success).to.be.true;
-  //   expect(el).dom.to.equal('<get-result><p>YEAH</p></get-result>');
-  // });
 });
