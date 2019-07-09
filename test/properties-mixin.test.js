@@ -32,11 +32,23 @@ class Component extends PropertiesMixin(HTMLElement) {
       },
       prop7: {
         type: Boolean
+      },
+      prop8: {
+        type: Boolean,
+        reflect: true
+      },
+      prop9: {
+        type: Boolean,
+        reflect: true,
+        notify: true,
+        observer: 'prop9Fn'
       }
     };
   }
 
   prop6Fn (x) {}
+
+  prop9Fn (x) {}
 }
 
 describe('Properties Mixin', () => {
@@ -77,6 +89,13 @@ describe('Properties Mixin', () => {
     expect(el.getAttribute('prop3')).to.be.equal(el.prop3);
   });
 
+  it('should have the prop value of type true reflected to attribute', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    el.prop8 = true;
+    await Promise.resolve();
+    expect(el.hasAttribute('prop8')).to.be.true;
+  });
+
   it('should have the prop value not reflect to attribute when no reflect flag is turned on', async () => {
     const el = await fixture(`<${tag}></${tag}>`);
     el.prop4 = 'str3';
@@ -101,5 +120,20 @@ describe('Properties Mixin', () => {
     el.prop6 = 'str3';
     await Promise.resolve();
     expect(spy.calledOnce).to.be.true;
+  });
+
+  it('should be able to notify, reflect, and observe', (done) => {
+    fixture(`<${tag}></${tag}>`).then(el => {
+      const spy = sinon.spy(el, 'prop9Fn');
+      el.addEventListener('prop9-change', ({ detail: value }) => {
+        expect(value).to.be.equal(el.prop9);
+        done();
+      });
+      el.prop9 = 'str4';
+      return Promise.resolve({ el, spy });
+    }).then(({ el, spy }) => {
+      expect(spy.calledOnce).to.be.true;
+      expect(el.getAttribute('prop9')).to.be.equal(el.prop9);
+    });
   });
 });
