@@ -24,7 +24,6 @@
 
 import { dedupingMixin } from '../lib/deduping-mixin';
 import { camelToDashCase } from '../lib/case-map';
-import { root } from '../lib/path';
 
 const microtaskPromise = Promise.resolve(true);
 
@@ -76,6 +75,7 @@ const defaultPropertyDeclaration = {
   type: String,
   converter: defaultConverter,
   reflect: false,
+  notify: false, // added
   hasChanged: notEqual
 };
 
@@ -330,12 +330,6 @@ export const PropertiesMixin = dedupingMixin(base => {
         this._hasConnectedResolver();
         this._hasConnectedResolver = undefined;
       }
-
-      // this.prop2 = 1;
-    }
-
-    _propertyNotify (name, value) {
-      this.dispatchEvent(new window.CustomEvent(`${camelToDashCase(root(name))}-change`, { detail: value }));
     }
 
     /**
@@ -412,16 +406,32 @@ export const PropertiesMixin = dedupingMixin(base => {
           if (!this._changedProperties.has(name)) {
             this._changedProperties.set(name, oldValue);
           }
+
+          const { reflect, notify, observer } = options;
           // Add to reflecting properties set.
           // Note, it's important that every change has a chance to add the
           // property to `_reflectingProperties`. This ensures setting
           // attribute + property reflects correctly.
-          if (options.reflect === true &&
+          if (reflect === true &&
               !(this._updateState & STATE_IS_REFLECTING_TO_PROPERTY)) {
             if (this._reflectingProperties === undefined) {
               this._reflectingProperties = new Map();
             }
             this._reflectingProperties.set(name, options);
+          }
+
+          if (notify === true) {
+            if (this._notifyProperties === undefined) {
+              this._notifyProperties = new Map();
+            }
+            this._notifyProperties.set(name, options);
+          }
+
+          if (observer !== undefined && typeof this[observer] === 'function') {
+            if (this._observerProperties === undefined) {
+              this._observerProperties = new Map();
+            }
+            this._observerProperties.set(name, observer);
           }
         } else {
           // Abort the request if the property should not be considered changed.
@@ -597,6 +607,18 @@ export const PropertiesMixin = dedupingMixin(base => {
         this._reflectingProperties.forEach(
           (v, k) => this._propertyToAttribute(k, this[k], v));
         this._reflectingProperties = undefined;
+      }
+
+      if (this._notifyProperties !== undefined && this._notifyProperties.size > 0) {
+        this._notifyProperties.forEach((v, k) =>
+          this.dispatchEvent(new window.CustomEvent(`${camelToDashCase(k)}-change`,
+            { detail: this[k] })));
+        this._notifyProperties = undefined;
+      }
+
+      if (this._observerProperties !== undefined && this._observerProperties.size > 0) {
+        this._observerProperties.forEach((v, k) => this[v](k));
+        this._observerProperties = undefined;
       }
     }
 

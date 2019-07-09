@@ -20,6 +20,14 @@ module.exports = config => {
             babelrc: false
           }
         }
+      },
+
+      coverageIstanbulReporter: {
+        thresholds: {
+          global: {
+            branches: 50
+          }
+        }
       }
 
       // you can overwrite/extend the config further
