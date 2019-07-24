@@ -42,6 +42,10 @@ class Component extends PropertiesMixin(HTMLElement) {
         reflect: true,
         notify: true,
         observer: 'prop9Fn'
+      },
+      thisProp: {
+        type: String,
+        reflect: true
       }
     };
   }
@@ -135,5 +139,19 @@ describe('Properties Mixin', () => {
       expect(spy.calledOnce).to.be.true;
       expect(el.getAttribute('prop9')).to.be.equal(el.prop9);
     });
+  });
+
+  it('should turn the camelcase property to dash attribute', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    el.thisProp = 'str3';
+    await Promise.resolve();
+    expect(el.getAttribute('this-prop')).to.be.equal(el.thisProp);
+  });
+
+  it('should turn the dash attribute to camelcase', async () => {
+    const el = await fixture(`<${tag}></${tag}>`);
+    el.setAttribute('this-prop', 'str5');
+    await Promise.resolve();
+    expect(el.getAttribute('this-prop')).to.be.equal(el.thisProp);
   });
 });
