@@ -1,20 +1,31 @@
-import { PropertiesMixin } from '../../mixins/properties-mixin';
-const { customElements, HTMLElement } = window;
+import { KwarkElement } from '../../index';
+import { ObserverMixin, observer } from '../../lib/observer-mixin';
+import { html } from 'lit-html';
+import { property, customElement } from 'lit-element';
 
-class WebComponent extends PropertiesMixin(HTMLElement) {
-  static get is () {
-    return 'web-component';
+@customElement('web-component')
+// eslint-disable-next-line no-unused-vars
+class WebComponent extends /** @type {function(new:KwarkElement)} */(ObserverMixin(KwarkElement)) {
+  @property()
+  prop1 = null;
+
+  @property({ type: 'String' })
+  @observer('fn2')
+  prop2 = null;
+
+  static observers = [
+    'fn1(prop1, prop2)'
+  ]
+
+  render () {
+    return html`Hello ${this.prop1} world`;
   }
 
-  static get properties () {
-    return {
-      prop1: {
-        type: String
-      }
-    };
+  fn2 (prop2) {
+    console.log('prop2', prop2);
+  }
+
+  fn1 (prop1, prop2) {
+    console.log(prop1, prop2);
   }
 }
-
-console.log(WebComponent.is);
-
-customElements.define(WebComponent.is, WebComponent);

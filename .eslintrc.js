@@ -5,7 +5,8 @@ module.exports = {
     'standard',
     'promise',
     'mocha',
-    'html'
+    'html',
+    'chai-expect'
   ],
   'env': {
     'browser': true,
@@ -14,5 +15,8 @@ module.exports = {
   },
   'rules': {
     'no-unused-expressions': 0
+  },
+  'globals': {
+    'expect': true
   }
 };

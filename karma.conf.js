@@ -1,10 +1,12 @@
+// @ts-nocheck
 /* eslint-disable import/no-extraneous-dependencies */
-const createDefaultConfig = require('@open-wc/testing-karma/default-config');
+const { createDefaultConfig } = require('@open-wc/testing-karma');
 const merge = require('webpack-merge');
 
 module.exports = config => {
   config.set(
     merge(createDefaultConfig(config), {
+      // @ts-ignore
       files: [
         // runs all files ending with .test in the test folder,
         // can be overwritten by passing a --grep flag. examples:
@@ -15,10 +17,21 @@ module.exports = config => {
       ],
 
       esm: {
-        babel: {
-          options: {
-            babelrc: false
-          }
+        nodeResolve: true,
+        customBabelConfig: {
+          plugins: [
+            ['@babel/plugin-proposal-decorators', {
+              decoratorsBeforeExport: true
+            }],
+            '@babel/plugin-proposal-class-properties',
+            ['@babel/plugin-transform-runtime', {
+              helpers: false,
+              regenerator: true
+            }],
+            ['@babel/plugin-proposal-object-rest-spread', {
+              useBuiltIns: true
+            }]
+          ]
         }
       },
 

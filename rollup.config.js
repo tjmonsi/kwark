@@ -19,6 +19,7 @@ output.push({
   },
   plugins: [
     resolve(),
+    babel(),
     commonjs({
       namedExports: {
         // left-hand side can be an absolute path, a path
@@ -27,7 +28,6 @@ output.push({
         'node_modules/@babel/runtime/regenerator/index.js': [ 'regenerator' ]
       }
     }),
-    babel(),
     uglify(),
     analyze()
   ]
@@ -40,6 +40,14 @@ output.push({
     format: 'esm'
   },
   plugins: [
+    resolve(),
+    babel({
+      babelrc: false,
+      plugins: [
+        ['@babel/plugin-proposal-decorators', { 'decoratorsBeforeExport': true }],
+        '@babel/plugin-proposal-class-properties'
+      ]
+    }),
     uglify(),
     analyze()
   ]
@@ -47,12 +55,13 @@ output.push({
 
 // for testing
 output.push({
-  input: './mixins/properties-mixin.js',
+  input: './index.js',
   output: {
-    file: './dist/mixins/properties-mixin.js',
+    file: './dist/kwark-element.js',
     format: 'esm'
   },
   plugins: [
+    resolve(),
     uglify(),
     analyze()
   ]

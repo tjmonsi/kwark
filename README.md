@@ -1,7 +1,6 @@
 # kwark
 
-Yet another lightweight web component sugar syntactic library that enables
-developers to create small web components faster
+Additional templating setups for web components. Compatible with UpdateElement of lit-element.
 
 # Table of Contents
 
@@ -25,16 +24,9 @@ Before submitting any change, make sure to:
 - Read the [Contributing instructions](./CONTRIBUTING.md)
 - Other instruction
 
-# How does it work?
+# Why build additional templates?
 
-It bootstraps the necessary properties that needs to be tracked. It also creates a mapping between its attribute counterpart.
-
-What it does is the following steps:
-1. Creates getters and setters
-2.
-
-# Why "yet another"?
-
+Because LitElement's default templating setup uses shadowDOM.
 Because there is a lot of libraries already that does almost the same thing:
 creating a better developer experience in creating re-usable web components.
 This library hopes to make the footprint of the syntactic sugar really small
